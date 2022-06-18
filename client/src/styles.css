@@ -1,0 +1,26 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.typing-container {
+  background-color: #dfdfdf;
+  max-width: 70vw;
+  border: 1px solid #333;
+  border-radius: 0.3em;
+  padding: 1rem;
+  overflow: hidden;
+}
