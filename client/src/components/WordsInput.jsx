@@ -1,9 +1,12 @@
 import React from 'react';
 
-function WordsInput() {
+function WordsInput({ onTextChanged }) {
+  const handleInputChanged = (e) => {
+    onTextChanged({ type: e.nativeEvent.inputType, data: e.target.value });
+  };
   return (
     <div>
-      <textarea></textarea>
+      <textarea onChange={handleInputChanged}></textarea>
     </div>
   );
 }

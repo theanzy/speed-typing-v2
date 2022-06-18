@@ -24,3 +24,14 @@ body {
   padding: 1rem;
   overflow: hidden;
 }
+.correct {
+  color: #00c12d;
+}
+
+.incorrect {
+  color: #fb0000;
+}
+
+.current {
+  color: #0011ff;
+}
