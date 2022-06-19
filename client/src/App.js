@@ -1,24 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Timer from './components/Timer';
 import WordsDisplay from './components/WordsDisplay';
 import WordsInput from './components/WordsInput';
 import './styles.css';
+import axios from 'axios';
+
+function getDisplayTokens(str) {
+  return str.split(/(\s{1})/).map((word) => {
+    return {
+      state: '',
+      word,
+    };
+  });
+}
+
+const RANDOM_QUOTE_API_URL = 'https://api.quotable.io/quotes';
+
+function randomBetween(start, end) {
+  return Math.floor(start + Math.random() * (end + 1));
+}
 
 function App() {
-  const text =
-    'It has long been an axiom of mine that the little things are infinitely the most important. The day of fortune is like a harvest day, we must be busy when the corn is ripe. The invariable mark of wisdom is to see the miraculous in the common. Wherever you go, go with all your heart. Coming together is a beginning.';
+  const [displayTokens, setDisplayTokens] = useState([]);
+  const [inputDisabled, setInputDisabled] = useState(false);
 
-  const [displayTokens, setDisplayTokens] = useState(
-    text.split(/(\s{1})/).map((word) => {
-      return {
-        state: '',
-        word,
-      };
-    })
-  );
-  const currentIndex = displayTokens.findIndex(
-    (token) => token.state === 'current'
-  );
+  useEffect(() => {
+    let source = axios.CancelToken.source();
+    let unmounted = false;
+
+    const fetchRandomQuotes = async () => {
+      try {
+        const res = await axios.get(RANDOM_QUOTE_API_URL, {
+          params: { page: randomBetween(1, 94) },
+          cancelToken: source.token,
+        });
+        const results = res.data.results;
+        const quotes = results.map((quote) => quote.content).join(' ');
+        if (!unmounted) {
+          const tokens = getDisplayTokens(quotes);
+          setDisplayTokens(tokens);
+          setInputDisabled(false);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchRandomQuotes();
+    return function () {
+      unmounted = true;
+      source.cancel('Cancelling in cleanup');
+    };
+  }, []);
 
   function handleTextChanged(e) {
     const inputTokens = e.data.split(/(\s{1})/);
@@ -52,14 +84,21 @@ function App() {
       }
     }
     setDisplayTokens(newTokens);
+    // game over
+    if (currentIndex === displayTokens.length) {
+      setInputDisabled(true);
+    }
   }
 
   return (
     <div className='container'>
       <div className='typing-container'>
         <Timer />
-        <WordsDisplay tokens={displayTokens} currentIndex={currentIndex} />
-        <WordsInput onTextChanged={handleTextChanged} />
+        <WordsDisplay tokens={displayTokens} />
+        <WordsInput
+          onTextChanged={handleTextChanged}
+          disabled={inputDisabled}
+        />
       </div>
     </div>
   );

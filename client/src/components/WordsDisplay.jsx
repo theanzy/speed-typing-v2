@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-function WordsDisplay({ tokens, currentIndex }) {
+function WordsDisplay({ tokens }) {
   const spanRef = useCallback((span) => {
     if (span == null) {
       return;
@@ -11,7 +11,7 @@ function WordsDisplay({ tokens, currentIndex }) {
     <div className='words-display'>
       {tokens.map((token, index) => (
         <span
-          ref={index === currentIndex ? spanRef : null}
+          ref={token.state === 'current' ? spanRef : null}
           key={index}
           className={`${token.state}`}>
           {token.word}
