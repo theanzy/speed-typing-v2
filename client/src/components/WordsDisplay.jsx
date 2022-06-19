@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-function WordsDisplay({ tokens }) {
+function WordsDisplay({ tokens, currentIndex }) {
+  const spanRef = useCallback((span) => {
+    if (span == null) {
+      return;
+    }
+    span.scrollIntoView({ behavior: 'smooth' });
+  }, []);
   return (
-    <div>
+    <div className='words-display'>
       {tokens.map((token, index) => (
-        <span key={index} className={`${token.state}`}>
+        <span
+          ref={index === currentIndex ? spanRef : null}
+          key={index}
+          className={`${token.state}`}>
           {token.word}
         </span>
       ))}

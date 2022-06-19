@@ -5,9 +5,7 @@ function WordsInput({ onTextChanged }) {
     onTextChanged({ type: e.nativeEvent.inputType, data: e.target.value });
   };
   return (
-    <div>
-      <textarea onChange={handleInputChanged}></textarea>
-    </div>
+    <textarea className='words-input' onChange={handleInputChanged}></textarea>
   );
 }
 

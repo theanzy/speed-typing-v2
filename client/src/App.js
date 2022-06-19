@@ -7,6 +7,7 @@ import './styles.css';
 function App() {
   const text =
     'It has long been an axiom of mine that the little things are infinitely the most important. The day of fortune is like a harvest day, we must be busy when the corn is ripe. The invariable mark of wisdom is to see the miraculous in the common. Wherever you go, go with all your heart. Coming together is a beginning.';
+
   const [displayTokens, setDisplayTokens] = useState(
     text.split(/(\s{1})/).map((word) => {
       return {
@@ -14,6 +15,9 @@ function App() {
         word,
       };
     })
+  );
+  const currentIndex = displayTokens.findIndex(
+    (token) => token.state === 'current'
   );
 
   function handleTextChanged(e) {
@@ -54,7 +58,7 @@ function App() {
     <div className='container'>
       <div className='typing-container'>
         <Timer />
-        <WordsDisplay tokens={displayTokens} />
+        <WordsDisplay tokens={displayTokens} currentIndex={currentIndex} />
         <WordsInput onTextChanged={handleTextChanged} />
       </div>
     </div>

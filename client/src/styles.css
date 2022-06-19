@@ -4,8 +4,10 @@
   box-sizing: border-box;
 }
 
-body {
+body,
+textarea {
   margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .container {
@@ -18,7 +20,7 @@ body {
 
 .typing-container {
   background-color: #dfdfdf;
-  max-width: 70vw;
+  width: 60vw;
   border: 1px solid #333;
   border-radius: 0.3em;
   padding: 1rem;
@@ -34,4 +36,30 @@ body {
 
 .current {
   color: #0011ff;
+}
+
+.words-display {
+  margin-left: calc(1rem + 1px);
+  margin-right: calc(1rem + 1px);
+  font-size: 1.25rem;
+  line-height: 2rem;
+  max-height: 5rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.words-input {
+  overflow: hidden;
+  border-radius: 0.2rem;
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 2rem;
+  width: 100%;
+  resize: none;
+  outline: none;
+  border: 1px solid transparent;
+}
+
+.words-input:focus {
+  border: 1px solid #0011ff;
 }
