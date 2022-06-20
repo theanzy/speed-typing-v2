@@ -4,6 +4,7 @@ import WordsDisplay from './components/WordsDisplay';
 import WordsInput from './components/WordsInput';
 import './styles.css';
 import axios from 'axios';
+import useCountdownTimer from './hooks/useCountdownTimer';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -23,6 +24,16 @@ function randomBetween(start, end) {
 function App() {
   const [displayTokens, setDisplayTokens] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(false);
+  const isNewGame = !inputDisabled;
+  const { timerStarted, startTimer, stopTimer, minutes, seconds } =
+    useCountdownTimer({
+      minutes: 1,
+    });
+
+  useEffect(() => {
+    const disableInput = !timerStarted;
+    setInputDisabled(disableInput);
+  }, [timerStarted]);
 
   useEffect(() => {
     let source = axios.CancelToken.source();
@@ -53,6 +64,9 @@ function App() {
   }, []);
 
   function handleTextChanged(e) {
+    if (!timerStarted) {
+      startTimer();
+    }
     const inputTokens = e.data.split(/(\s{1})/);
 
     if (inputTokens[inputTokens.length - 1] === '') {
@@ -65,7 +79,7 @@ function App() {
     }
     const newTokens = Array.from(displayTokens);
     // current
-    if (newTokens[currentIndex] != undefined) {
+    if (newTokens[currentIndex] !== undefined) {
       newTokens[currentIndex].state = 'current';
     }
     // next
@@ -87,14 +101,15 @@ function App() {
     // game over
     if (currentIndex === displayTokens.length) {
       setInputDisabled(true);
+      stopTimer();
     }
   }
 
   return (
     <div className='container'>
       <div className='typing-container'>
-        <Timer />
-        <WordsDisplay tokens={displayTokens} />
+        <Timer minutes={minutes} seconds={seconds} />
+        <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
         <WordsInput
           onTextChanged={handleTextChanged}
           disabled={inputDisabled}

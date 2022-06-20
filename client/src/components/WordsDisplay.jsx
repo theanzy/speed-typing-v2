@@ -1,14 +1,25 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 
-function WordsDisplay({ tokens }) {
+function WordsDisplay({ refresh, tokens }) {
   const spanRef = useCallback((span) => {
     if (span == null) {
       return;
     }
     span.scrollIntoView({ behavior: 'smooth' });
   }, []);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.currrent == null) {
+      return;
+    }
+    if (refresh === true) {
+      containerRef.currrent.scrollTop = 0;
+    }
+  }, [refresh]);
+
   return (
-    <div className='words-display'>
+    <div className='words-display' ref={containerRef}>
       {tokens.map((token, index) => (
         <span
           ref={token.state === 'current' ? spanRef : null}
