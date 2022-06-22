@@ -5,6 +5,7 @@ import WordsInput from './components/WordsInput';
 import './styles.css';
 import axios from 'axios';
 import useCountdownTimer from './hooks/useCountdownTimer';
+import Scoreboard from './components/Scoreboard';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -22,13 +23,24 @@ function randomBetween(start, end) {
 }
 
 function App() {
+  const [initialCountdown, setInitialCountdown] = useState({
+    minutes: 1,
+  });
   const [displayTokens, setDisplayTokens] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [inputDisabled, setInputDisabled] = useState(false);
   const isNewGame = !inputDisabled;
-  const { timerStarted, startTimer, stopTimer, minutes, seconds } =
-    useCountdownTimer({
-      minutes: 1,
-    });
+  const {
+    timerStarted,
+    startTimer,
+    stopTimer,
+    restoreDefaultTime,
+    minutes,
+    seconds,
+  } = useCountdownTimer(initialCountdown);
+  const gameEnd =
+    (!loading && !timerStarted && inputDisabled) ||
+    (minutes === 0 && seconds === 0);
 
   useEffect(() => {
     const disableInput = !timerStarted;
@@ -49,6 +61,7 @@ function App() {
         const quotes = results.map((quote) => quote.content).join(' ');
         if (!unmounted) {
           const tokens = getDisplayTokens(quotes);
+          setLoading(false);
           setDisplayTokens(tokens);
           setInputDisabled(false);
         }
@@ -56,12 +69,14 @@ function App() {
         console.error(err);
       }
     };
-    fetchRandomQuotes();
+    if (loading) {
+      fetchRandomQuotes();
+    }
     return function () {
       unmounted = true;
       source.cancel('Cancelling in cleanup');
     };
-  }, []);
+  }, [loading]);
 
   function handleTextChanged(e) {
     if (!timerStarted) {
@@ -77,7 +92,9 @@ function App() {
       // finish typing
       return;
     }
+
     const newTokens = Array.from(displayTokens);
+
     // current
     if (newTokens[currentIndex] !== undefined) {
       newTokens[currentIndex].state = 'current';
@@ -91,10 +108,10 @@ function App() {
     if (previousIndex >= 0 && previousIndex < inputTokens.length) {
       const previousInput = inputTokens[previousIndex];
       const previousWord = newTokens[previousIndex].word;
-      if (previousInput === previousWord) {
-        newTokens[previousIndex].state = 'correct';
-      } else {
+      if (previousInput !== previousWord) {
         newTokens[previousIndex].state = 'incorrect';
+      } else if (previousInput !== ' ') {
+        newTokens[previousIndex].state = 'correct';
       }
     }
     setDisplayTokens(newTokens);
@@ -105,14 +122,39 @@ function App() {
     }
   }
 
+  const getCorrectWords = () =>
+    displayTokens.filter((token) => token.state === 'correct').length;
+  const getTotalWords = () =>
+    displayTokens.filter(
+      (token) =>
+        token.word !== ' ' &&
+        (token.state === 'correct' || token.state === 'incorrect')
+    ).length;
+  const getElapsedSeconds = () =>
+    initialCountdown.minutes * 60 - (minutes * 60 + seconds);
+
+  const handleRestartGame = () => {
+    setLoading(true);
+    restoreDefaultTime();
+  };
+
   return (
     <div className='container'>
+      {gameEnd && (
+        <Scoreboard
+          onRestartGame={handleRestartGame}
+          totalWords={getTotalWords()}
+          correctWords={getCorrectWords()}
+          elapsedSeconds={getElapsedSeconds()}
+        />
+      )}
       <div className='typing-container'>
         <Timer minutes={minutes} seconds={seconds} />
         <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
         <WordsInput
           onTextChanged={handleTextChanged}
           disabled={inputDisabled}
+          clearText={!loading}
         />
       </div>
     </div>

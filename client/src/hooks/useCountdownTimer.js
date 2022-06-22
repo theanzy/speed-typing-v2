@@ -37,7 +37,7 @@ function toMs({ days, hours, minutes, seconds }) {
 
 function useCountdownTimer({ days, hours, minutes, seconds }) {
   const [futureTime, setFutureTime] = useState();
-  const remainingTime = useRef(null);
+  const [remainingTime, setRemainingTime] = useState(null);
   const [timerStarted, setTimerStarted] = useState(false);
   const intervalRef = useRef(null);
 
@@ -52,14 +52,17 @@ function useCountdownTimer({ days, hours, minutes, seconds }) {
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {
-      remainingTime.current = futureTime - new Date().getTime();
-      if (remainingTime.current <= 0) {
-        clearInterval(intervalRef.current);
-        setTimerStarted(false);
-      }
+      setRemainingTime(futureTime - new Date().getTime());
     }, 500);
     return () => clearInterval(intervalRef.current);
   }, [futureTime]);
+
+  useEffect(() => {
+    if (remainingTime <= 0) {
+      clearInterval(intervalRef.current);
+      setTimerStarted(false);
+    }
+  }, [remainingTime]);
 
   const startTimer = useCallback(() => {
     setTimerStarted(true);
@@ -67,12 +70,15 @@ function useCountdownTimer({ days, hours, minutes, seconds }) {
   const stopTimer = useCallback(() => {
     setTimerStarted(false);
   }, []);
-
+  const restoreDefaultTime = useCallback(() => {
+    setRemainingTime(null);
+  }, []);
   return {
     timerStarted,
     startTimer,
     stopTimer,
-    ...getTime(remainingTime.current || defaultMs),
+    restoreDefaultTime,
+    ...getTime(remainingTime == null ? defaultMs : remainingTime),
   };
 }
 export default useCountdownTimer;

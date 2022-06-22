@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback } from 'react';
 
 function WordsDisplay({ refresh, tokens }) {
   const spanRef = useCallback((span) => {
@@ -7,16 +7,18 @@ function WordsDisplay({ refresh, tokens }) {
     }
     span.scrollIntoView({ behavior: 'smooth' });
   }, []);
-  const containerRef = useRef(null);
 
-  useEffect(() => {
-    if (containerRef.currrent == null) {
-      return;
-    }
-    if (refresh === true) {
-      containerRef.currrent.scrollTop = 0;
-    }
-  }, [refresh]);
+  const containerRef = useCallback(
+    (container) => {
+      if (container == null) {
+        return;
+      }
+      if (refresh === true) {
+        container.scrollTop = 0;
+      }
+    },
+    [refresh]
+  );
 
   return (
     <div className='words-display' ref={containerRef}>

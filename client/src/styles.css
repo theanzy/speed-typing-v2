@@ -18,6 +18,59 @@ textarea {
   height: 100vh;
 }
 
+.scoreboard {
+  z-index: 3;
+  position: absolute;
+  border: 1px solid #333;
+  border-radius: 0.3em;
+  padding: 1rem;
+  background-color: #fff;
+  width: 70vw;
+  font-size: 1.15rem;
+}
+
+.scoreboard h2 {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.scoreboard .score {
+  margin-bottom: 1rem;
+}
+
+.scoreboard .score .score-label {
+  margin-left: 10%;
+  font-weight: bold;
+}
+
+.btn-group {
+  margin-bottom: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  outline: none;
+  border: 1px solid transparent;
+  padding: 0.5em 0.75em;
+  border-radius: 0.25em;
+  font-size: 1.15rem;
+  cursor: pointer;
+  margin: 0.25rem;
+}
+
+.btn-primary {
+  background-color: #0084ff;
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #015eb6;
+}
+
 .typing-container {
   width: 60vw;
   border: 1px solid #333;
