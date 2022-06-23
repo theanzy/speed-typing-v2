@@ -6,6 +6,7 @@ import './styles.css';
 import axios from 'axios';
 import useCountdownTimer from './hooks/useCountdownTimer';
 import Scoreboard from './components/Scoreboard';
+import SelectMenu from './components/SelectMenu';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -21,6 +22,21 @@ const RANDOM_QUOTE_API_URL = 'https://api.quotable.io/quotes';
 function randomBetween(start, end) {
   return Math.floor(start + Math.random() * (end + 1));
 }
+
+function range(start = 0, end) {
+  return [...Array(end + 1 - start).keys()].map((x) => x + start);
+}
+
+function formatMinute(x) {
+  return `${x} minute${x > 1 ? 's' : ''}`;
+}
+
+const TIMEOUT_SELECTIONS = range(1, 5).map((x) => {
+  return {
+    value: x,
+    display: formatMinute(x),
+  };
+});
 
 function App() {
   const [initialCountdown, setInitialCountdown] = useState({
@@ -138,6 +154,12 @@ function App() {
     restoreDefaultTime();
   };
 
+  const handleSelectedTimeoutChange = (val) => {
+    setInitialCountdown({
+      minutes: val,
+    });
+  };
+
   return (
     <div className='container'>
       {gameEnd && (
@@ -149,6 +171,10 @@ function App() {
         />
       )}
       <div className='typing-container'>
+        <SelectMenu
+          items={TIMEOUT_SELECTIONS}
+          onChange={handleSelectedTimeoutChange}
+        />
         <Timer minutes={minutes} seconds={seconds} />
         <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
         <WordsInput
