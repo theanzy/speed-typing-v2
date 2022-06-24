@@ -6,7 +6,7 @@ function SelectMenu({ items, onChange }) {
   };
   return (
     <div>
-      <select name='items' onChange={handleChange}>
+      <select className='select-items' name='items' onChange={handleChange}>
         {items.map((item) => (
           <option key={item.display} value={item.value}>
             {item.display}
