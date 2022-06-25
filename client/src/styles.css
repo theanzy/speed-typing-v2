@@ -79,6 +79,13 @@ textarea {
   overflow: hidden;
 }
 
+.typing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .timer {
   display: flex;
   justify-content: flex-end;
@@ -126,6 +133,7 @@ textarea {
 .words-input:focus {
   border: 1px solid #0011ff;
 }
+
 /* refer: https://www.sliderrevolution.com/resources/css-select-styles/ */
 select.select-items {
   /* styling */

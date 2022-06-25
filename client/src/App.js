@@ -7,6 +7,7 @@ import axios from 'axios';
 import useCountdownTimer from './hooks/useCountdownTimer';
 import Scoreboard from './components/Scoreboard';
 import SelectMenu from './components/SelectMenu';
+import Toggle from './components/Toggle';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -46,6 +47,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [inputDisabled, setInputDisabled] = useState(false);
   const isNewGame = !inputDisabled;
+  const [darkMode, setDarkMode] = useState(false);
+
   const {
     timerStarted,
     startTimer,
@@ -62,6 +65,8 @@ function App() {
     const disableInput = !timerStarted;
     setInputDisabled(disableInput);
   }, [timerStarted]);
+
+  const gameInProgress = timerStarted && !inputDisabled;
 
   useEffect(() => {
     let source = axios.CancelToken.source();
@@ -171,10 +176,14 @@ function App() {
         />
       )}
       <div className='typing-container'>
-        <SelectMenu
-          items={TIMEOUT_SELECTIONS}
-          onChange={handleSelectedTimeoutChange}
-        />
+        <div className='typing-header'>
+          <SelectMenu
+            enabled={!gameInProgress}
+            items={TIMEOUT_SELECTIONS}
+            onChange={handleSelectedTimeoutChange}
+          />
+          <Toggle checked={darkMode} onToggle={() => setDarkMode((p) => !p)} />
+        </div>
         <Timer minutes={minutes} seconds={seconds} />
         <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
         <WordsInput
