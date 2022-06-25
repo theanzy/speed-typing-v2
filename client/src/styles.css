@@ -9,6 +9,24 @@ textarea {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+:root {
+  --font-color: #222;
+  --bg-main-color: #ffffff;
+  --primary-color: hsl(220, 100%, 45%);
+  --hover-primary-color: hsl(220, 100%, 25%);
+}
+
+.dark-mode {
+  --bg-main-color: #303030;
+  --font-color: #fff;
+  --primary-color: hsl(201, 100%, 60%);
+  --hover-primary-color: hsl(201, 100%, 45%);
+}
+
+textarea {
+  background-color: var(--bg-main-color);
+  color: var(--font-color);
+}
 
 .container {
   margin: auto;
@@ -16,15 +34,17 @@ textarea {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: var(--bg-main-color);
+  color: var(--font-color);
 }
 
 .scoreboard {
   z-index: 3;
   position: absolute;
-  border: 1px solid #333;
+  border: 1px solid var(--font-color);
   border-radius: 0.3em;
   padding: 1rem;
-  background-color: #fff;
+  background-color: var(--bg-main-color);
   width: 70vw;
   font-size: 1.15rem;
 }
@@ -62,18 +82,18 @@ textarea {
 }
 
 .btn-primary {
-  background-color: #0084ff;
+  background-color: var(--primary-color);
   color: #fff;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: #015eb6;
+  background-color: var(--hover-primary-color);
 }
 
 .typing-container {
   width: 60vw;
-  border: 1px solid #333;
+  border: 1px solid var(--font-color);
   border-radius: 0.3em;
   padding: 1rem;
   overflow: hidden;
@@ -90,7 +110,7 @@ textarea {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  color: #0011ff;
+  color: var(--primary-color);
   font-weight: 500;
   font-size: 1.25rem;
   margin-bottom: 1rem;
@@ -105,7 +125,7 @@ textarea {
 }
 
 .current {
-  color: #0011ff;
+  color: var(--primary-color);
 }
 
 .words-display {
@@ -131,7 +151,7 @@ textarea {
 }
 
 .words-input:focus {
-  border: 1px solid #0011ff;
+  border: 2px solid var(--primary-color);
 }
 
 /* refer: https://www.sliderrevolution.com/resources/css-select-styles/ */

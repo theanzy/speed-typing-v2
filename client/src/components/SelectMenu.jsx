@@ -1,13 +1,13 @@
 import React from 'react';
 
-function SelectMenu({ enabled, items, onChange }) {
+function SelectMenu({ disabled, items, onChange }) {
   const handleChange = (e) => {
     onChange(e.target.value);
   };
   return (
     <div>
       <select
-        disabled={!enabled}
+        disabled={disabled}
         className='select-items'
         name='items'
         onChange={handleChange}>

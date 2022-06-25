@@ -166,7 +166,7 @@ function App() {
   };
 
   return (
-    <div className='container'>
+    <div className={`container ${darkMode ? 'dark-mode' : ''} `}>
       {gameEnd && (
         <Scoreboard
           onRestartGame={handleRestartGame}
@@ -178,7 +178,7 @@ function App() {
       <div className='typing-container'>
         <div className='typing-header'>
           <SelectMenu
-            enabled={!gameInProgress}
+            disabled={gameInProgress}
             items={TIMEOUT_SELECTIONS}
             onChange={handleSelectedTimeoutChange}
           />
