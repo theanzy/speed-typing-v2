@@ -17,7 +17,7 @@ function getLocalStorage(key, defaultValue) {
   if (item == null) {
     item = defaultValue;
   }
-  return item;
+  return item === 'true';
 }
 
 function setLocalStorage(key, value) {
