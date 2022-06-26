@@ -61,10 +61,16 @@ function App() {
   const gameEnd =
     (!loading && !timerStarted && inputDisabled) ||
     (minutes <= 0 && seconds <= 0);
+
   useEffect(() => {
-    let timeout = setTimeout(() => {
+    let timeout;
+    if (!gameEnd) {
       setShowScoreBoard(gameEnd);
-    }, 1000);
+    } else {
+      timeout = setTimeout(() => {
+        setShowScoreBoard(gameEnd);
+      }, 1000);
+    }
     return () => clearTimeout(timeout);
   }, [gameEnd]);
 
