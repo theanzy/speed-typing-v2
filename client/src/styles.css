@@ -47,6 +47,8 @@ textarea {
   background-color: var(--bg-main-color);
   width: 70vw;
   font-size: 1.15rem;
+  transition: 1s;
+  opacity: 1;
 }
 
 .scoreboard h2 {
@@ -129,8 +131,8 @@ textarea {
 }
 
 .words-display {
-  margin-left: calc(1rem + 1px);
-  margin-right: calc(1rem + 1px);
+  margin-left: calc(1rem + 2px);
+  margin-right: calc(1rem + 2px);
   font-size: 1.25rem;
   line-height: 2rem;
   max-height: 10rem;

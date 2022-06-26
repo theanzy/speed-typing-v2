@@ -49,7 +49,7 @@ function App() {
   const [inputDisabled, setInputDisabled] = useState(false);
   const isNewGame = !inputDisabled;
   const { darkMode, toggleDarkMode } = useDarkMode();
-
+  const [showScoreBoard, setShowScoreBoard] = useState(false);
   const {
     timerStarted,
     startTimer,
@@ -60,7 +60,13 @@ function App() {
   } = useCountdownTimer(initialCountdown);
   const gameEnd =
     (!loading && !timerStarted && inputDisabled) ||
-    (minutes === 0 && seconds === 0);
+    (minutes <= 0 && seconds <= 0);
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      setShowScoreBoard(gameEnd);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [gameEnd]);
 
   useEffect(() => {
     const disableInput = !timerStarted;
@@ -168,7 +174,7 @@ function App() {
 
   return (
     <div className={`container ${darkMode ? 'dark-mode' : ''} `}>
-      {gameEnd && (
+      {showScoreBoard && (
         <Scoreboard
           onRestartGame={handleRestartGame}
           totalWords={getTotalWords()}
