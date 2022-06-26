@@ -8,6 +8,7 @@ import useCountdownTimer from './hooks/useCountdownTimer';
 import Scoreboard from './components/Scoreboard';
 import SelectMenu from './components/SelectMenu';
 import Toggle from './components/Toggle';
+import useDarkMode from './hooks/useDarkMode';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -47,7 +48,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [inputDisabled, setInputDisabled] = useState(false);
   const isNewGame = !inputDisabled;
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   const {
     timerStarted,
@@ -182,7 +183,7 @@ function App() {
             items={TIMEOUT_SELECTIONS}
             onChange={handleSelectedTimeoutChange}
           />
-          <Toggle checked={darkMode} onToggle={() => setDarkMode((p) => !p)} />
+          <Toggle checked={darkMode} onToggle={toggleDarkMode} />
         </div>
         <Timer minutes={minutes} seconds={seconds} />
         <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
