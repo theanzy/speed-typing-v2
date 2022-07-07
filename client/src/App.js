@@ -9,6 +9,8 @@ import Scoreboard from './components/Scoreboard';
 import SelectMenu from './components/SelectMenu';
 import Toggle from './components/Toggle';
 import useDarkMode from './hooks/useDarkMode';
+import { getList, addToList } from './localData';
+import calculateGameScore from './score';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -62,13 +64,28 @@ function App() {
     (!loading && !timerStarted && inputDisabled) ||
     (minutes <= 0 && seconds <= 0);
 
+  const getCorrectWords = () =>
+    displayTokens.filter((token) => token.state === 'correct').length;
+  const getTotalWords = () =>
+    displayTokens.filter(
+      (token) =>
+        token.word !== ' ' &&
+        (token.state === 'correct' || token.state === 'incorrect')
+    ).length;
+  const getElapsedSeconds = () =>
+    initialCountdown.minutes * 60 - (minutes * 60 + seconds);
+  const { grossWPM, accuracy, netWPM } = calculateGameScore(getTotalWords(), getElapsedSeconds(), getCorrectWords());
+
   useEffect(() => {
     let timeout;
     if (!gameEnd) {
-      setShowScoreBoard(gameEnd);
+      setShowScoreBoard(false);
     } else {
+      if (isNaN(netWPM) == false) {
+        addToList('WPM_SCORE', netWPM);
+      }
       timeout = setTimeout(() => {
-        setShowScoreBoard(gameEnd);
+        setShowScoreBoard(true);
       }, 1000);
     }
     return () => clearTimeout(timeout);
@@ -156,16 +173,6 @@ function App() {
     }
   }
 
-  const getCorrectWords = () =>
-    displayTokens.filter((token) => token.state === 'correct').length;
-  const getTotalWords = () =>
-    displayTokens.filter(
-      (token) =>
-        token.word !== ' ' &&
-        (token.state === 'correct' || token.state === 'incorrect')
-    ).length;
-  const getElapsedSeconds = () =>
-    initialCountdown.minutes * 60 - (minutes * 60 + seconds);
 
   const handleRestartGame = () => {
     setLoading(true);
@@ -183,9 +190,9 @@ function App() {
       {showScoreBoard && (
         <Scoreboard
           onRestartGame={handleRestartGame}
-          totalWords={getTotalWords()}
-          correctWords={getCorrectWords()}
-          elapsedSeconds={getElapsedSeconds()}
+          grossWPM={grossWPM}
+          accuracy={accuracy}
+          netWPM={netWPM}
         />
       )}
       <div className='typing-container'>

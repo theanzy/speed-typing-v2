@@ -1,14 +1,10 @@
 import React from 'react';
-
 function Scoreboard({
-  totalWords,
-  correctWords,
-  elapsedSeconds,
+  grossWPM,
+  accuracy,
+  netWPM,
   onRestartGame,
 }) {
-  const grossWPM = totalWords / (elapsedSeconds / 60);
-  const accuracy = correctWords / totalWords;
-  const netWPM = grossWPM * accuracy;
   return (
     <div className='scoreboard'>
       <h2>Your Score: </h2>
