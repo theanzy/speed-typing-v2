@@ -9,8 +9,9 @@ import Scoreboard from './components/Scoreboard';
 import SelectMenu from './components/SelectMenu';
 import Toggle from './components/Toggle';
 import useDarkMode from './hooks/useDarkMode';
-import { getList, addToList } from './localData';
+import { getList, addToList, getValues } from './localData';
 import calculateGameScore from './score';
+import BarChart from './components/BarChart';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -74,7 +75,11 @@ function App() {
     ).length;
   const getElapsedSeconds = () =>
     initialCountdown.minutes * 60 - (minutes * 60 + seconds);
-  const { grossWPM, accuracy, netWPM } = calculateGameScore(getTotalWords(), getElapsedSeconds(), getCorrectWords());
+  const { grossWPM, accuracy, netWPM } = calculateGameScore(
+    getTotalWords(),
+    getElapsedSeconds(),
+    getCorrectWords()
+  );
 
   useEffect(() => {
     let timeout;
@@ -82,7 +87,10 @@ function App() {
       setShowScoreBoard(false);
     } else {
       if (isNaN(netWPM) == false) {
-        addToList('WPM_SCORE', netWPM);
+        addToList('WPM_SCORE', {
+          label: new Date().toLocaleDateString(),
+          value: netWPM,
+        });
       }
       timeout = setTimeout(() => {
         setShowScoreBoard(true);
@@ -173,7 +181,6 @@ function App() {
     }
   }
 
-
   const handleRestartGame = () => {
     setLoading(true);
     restoreDefaultTime();
@@ -193,7 +200,12 @@ function App() {
           grossWPM={grossWPM}
           accuracy={accuracy}
           netWPM={netWPM}
-        />
+        >
+          <BarChart
+            labels={getValues(getList('WPM_SCORE'), 'label')}
+            data={getValues(getList('WPM_SCORE'), 'value')}
+          />
+        </Scoreboard>
       )}
       <div className='typing-container'>
         <div className='typing-header'>

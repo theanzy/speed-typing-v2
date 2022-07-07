@@ -4,11 +4,6 @@
   box-sizing: border-box;
 }
 
-body,
-textarea {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 :root {
   --font-color: #222;
   --bg-main-color: #ffffff;
@@ -23,6 +18,13 @@ textarea {
   --hover-primary-color: hsl(201, 100%, 45%);
 }
 
+body,
+textarea {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
 textarea {
   background-color: var(--bg-main-color);
   color: var(--font-color);
@@ -33,9 +35,9 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background-color: var(--bg-main-color);
   color: var(--font-color);
+  height: 100vh;
 }
 
 .scoreboard {
@@ -49,6 +51,12 @@ textarea {
   font-size: 1.15rem;
   transition: 1s;
   opacity: 1;
+  top: 0;
+  overflow-y:scroll;
+  max-height: 100vh;
+}
+.score-board-child {
+  padding: 5px 10px;
 }
 
 .scoreboard h2 {

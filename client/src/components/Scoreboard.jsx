@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Children } from 'react';
 function Scoreboard({
   grossWPM,
   accuracy,
   netWPM,
   onRestartGame,
+  children
 }) {
   return (
     <div className='scoreboard'>
@@ -24,6 +25,9 @@ function Scoreboard({
         <button className='btn btn-primary' onClick={onRestartGame}>
           Restart
         </button>
+      </div>
+      <div className='score-board-child'>
+        {children}
       </div>
     </div>
   );
