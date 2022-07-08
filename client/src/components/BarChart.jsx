@@ -1,26 +1,41 @@
 import { useCallback, useState } from 'react';
 import { Chart, registerables } from 'chart.js';
 
-function BarChart({labels, data}) {
-  Chart.defaults.color = 'hsl(201, 100%, 45%)';
+function BarChart({ labels, data }) {
+  Chart.defaults.color = 'hsl(201, 100%, 70%)';
   const CONFIG = {
     type: 'bar',
     data: {
       labels: labels,
-      datasets: [{
-        label: 'WPM',
-        data: data,
-        backgroundColor: 'rgba(0, 200, 0, 0.3)',
-        borderColor: 'rgba(55, 200, 55, 1)',
-        borderRadius: 5,
-        borderWidth: 1,
-      }]
+      datasets: [
+        {
+          label: 'WPM',
+          data: data,
+          backgroundColor: 'rgba(0, 200, 0, 0.3)',
+          borderColor: 'rgba(55, 200, 55, 1)',
+          borderRadius: 5,
+          borderWidth: 1,
+        },
+      ],
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       scales: {
         y: {
           beginAtZero: true,
+        },
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Last 10 Scores',
+          font: {
+            weight: 'bold',
+            size: 16,
+            lineHeight: 1,
+          },
+          padding: 5
         },
       },
     },
@@ -37,7 +52,7 @@ function BarChart({labels, data}) {
     }
     setChart(new Chart(ctx, CONFIG));
   }, []);
-  return  <canvas ref={chartRef}></canvas>;
+  return <canvas ref={chartRef}></canvas>;
 }
 
 export default BarChart;

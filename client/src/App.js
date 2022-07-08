@@ -104,6 +104,10 @@ function App() {
     setInputDisabled(disableInput);
   }, [timerStarted]);
 
+  useEffect(() => {
+    const body = document.querySelector('body').classList.toggle('dark-mode', darkMode);
+  }, [darkMode]);
+
   const gameInProgress = timerStarted && !inputDisabled;
 
   useEffect(() => {
@@ -193,7 +197,7 @@ function App() {
   };
 
   return (
-    <div className={`container ${darkMode ? 'dark-mode' : ''} `}>
+    <div className={`container`}>
       {showScoreBoard && (
         <Scoreboard
           onRestartGame={handleRestartGame}
