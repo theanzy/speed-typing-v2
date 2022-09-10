@@ -12,6 +12,7 @@ import useDarkMode from './hooks/useDarkMode';
 import { getList, addToList, getValues } from './localData';
 import calculateGameScore from './score';
 import BarChart from './components/BarChart';
+import Loader from './components/Loader';
 
 function getDisplayTokens(str) {
   return str.split(/(\s{1})/).map((word) => {
@@ -105,7 +106,9 @@ function App() {
   }, [timerStarted]);
 
   useEffect(() => {
-    const body = document.querySelector('body').classList.toggle('dark-mode', darkMode);
+    const body = document
+      .querySelector('body')
+      .classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
   const gameInProgress = timerStarted && !inputDisabled;
@@ -221,7 +224,12 @@ function App() {
           <Toggle checked={darkMode} onToggle={toggleDarkMode} />
         </div>
         <Timer minutes={minutes} seconds={seconds} />
-        <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
+        <div className='word-display-container'>
+          {loading && <Loader />}
+          {!loading && (
+            <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
+          )}
+        </div>
         <WordsInput
           onTextChanged={handleTextChanged}
           disabled={inputDisabled}

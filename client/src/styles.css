@@ -203,3 +203,10 @@ select.select-items:focus {
   border-color: grey;
   outline: 0;
 }
+
+.word-display-container {
+  height: 11rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
