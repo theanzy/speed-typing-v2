@@ -27,12 +27,12 @@ function BarChart({ labels, data }) {
         },
       },
       plugins: {
-        title: {
+        title: { 
           display: true,
           text: 'Last 10 Scores',
           font: {
             weight: 'bold',
-            size: 16,
+            size: 15,
             lineHeight: 1,
           },
           padding: 5
