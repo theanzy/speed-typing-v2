@@ -21,16 +21,19 @@ function WordsDisplay({ refresh, tokens }) {
   );
 
   return (
-    <div className='words-display' ref={containerRef}>
-      {tokens.map((token, index) => (
-        <span
-          ref={token.state === 'current' ? spanRef : null}
-          key={index}
-          className={`${token.state}`}>
-          {token.word}
-        </span>
-      ))}
-    </div>
+    <>
+      <div className='words-display' ref={containerRef}>
+        {tokens.map((token, index) => (
+          <span
+            ref={token.state === 'current' ? spanRef : null}
+            key={index}
+            className={`${token.state}`}
+          >
+            {token.word}
+          </span>
+        ))}
+      </div>
+    </>
   );
 }
 

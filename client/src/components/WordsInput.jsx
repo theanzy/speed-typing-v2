@@ -21,7 +21,8 @@ function WordsInput({ onTextChanged, disabled, clearText }) {
       ref={textAreaRef}
       disabled={disabled}
       className='words-input'
-      onChange={handleInputChanged}></textarea>
+      onChange={handleInputChanged}
+    ></textarea>
   );
 }
 

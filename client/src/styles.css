@@ -124,7 +124,6 @@ textarea {
   color: var(--primary-color);
   font-weight: 500;
   font-size: 1.25rem;
-  margin-bottom: 1rem;
 }
 
 .correct {
@@ -139,14 +138,22 @@ textarea {
   color: var(--primary-color);
 }
 
+.word-display-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 11rem;
+  overflow: hidden;
+}
+
 .words-display {
+  align-self: flex-end;
   margin-left: calc(1rem + 2px);
   margin-right: calc(1rem + 2px);
   font-size: 1.25rem;
   line-height: 2rem;
-  height: 100%;
-  margin-bottom: 1rem;
-  overflow: hidden;
+  padding: 0;
+  max-height: 11rem;
 }
 
 .words-input {
@@ -159,10 +166,11 @@ textarea {
   resize: none;
   outline: none;
   border: 1px solid #a3a3a3;
+  height: 10rem;
 }
 
 .words-input:focus {
-  border: 2px solid var(--primary-color);
+  border: 1px solid var(--primary-color);
 }
 
 /* refer: https://www.sliderrevolution.com/resources/css-select-styles/ */
@@ -200,11 +208,4 @@ select.select-items:focus {
   background-repeat: no-repeat;
   border-color: grey;
   outline: 0;
-}
-
-.word-display-container {
-  height: 11rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }

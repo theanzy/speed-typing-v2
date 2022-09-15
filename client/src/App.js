@@ -140,10 +140,11 @@ function App() {
           params: { page: randomBetween(1, 94) },
           cancelToken: source.token,
         });
-        const results = res.data.results;
+        const results = res.data.results.slice(1, 6);
         const quotes = results.map((quote) => quote.content).join(' ');
         if (!unmounted) {
           const tokens = getDisplayTokens(quotes);
+          tokens[0].state = 'current';
           setLoading(false);
           setDisplayTokens(tokens);
           setInputDisabled(false);
