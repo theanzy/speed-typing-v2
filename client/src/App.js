@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Timer from './components/Timer';
 import WordsDisplay from './components/WordsDisplay';
 import WordsInput from './components/WordsInput';
@@ -29,25 +29,35 @@ function randomBetween(start, end) {
   return Math.floor(start + Math.random() * (end + 1));
 }
 
-function range(start = 0, end) {
-  return [...Array(end + 1 - start).keys()].map((x) => x + start);
-}
-
-function formatMinute(x) {
-  return `${x} minute${x > 1 ? 's' : ''}`;
-}
-
-const TIMEOUT_SELECTIONS = range(1, 5).map((x) => {
-  return {
-    value: x,
-    display: formatMinute(x),
-  };
-});
+const TIMEOUT_SELECTIONS = [
+  {
+    value: 10,
+    display: '10 seconds',
+  },
+  {
+    value: 30,
+    display: '30 seconds',
+  },
+  {
+    value: 60,
+    display: '1 minute',
+  },
+  {
+    value: 120,
+    display: '2 minutes',
+  },
+  {
+    value: 180,
+    display: '3 minutes',
+  },
+];
 
 function App() {
   const [initialCountdown, setInitialCountdown] = useState({
-    minutes: 1,
+    seconds: 10,
   });
+  const [score, setScore] = useState({});
+
   const [displayTokens, setDisplayTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [inputDisabled, setInputDisabled] = useState(false);
@@ -59,40 +69,41 @@ function App() {
     startTimer,
     stopTimer,
     restoreDefaultTime,
-    minutes,
-    seconds,
+    minutes: minutesLeft,
+    seconds: secondsLeft,
   } = useCountdownTimer(initialCountdown);
   const gameEnd =
     (!loading && !timerStarted && inputDisabled) ||
-    (minutes <= 0 && seconds <= 0);
-
-  const getCorrectWords = () =>
-    displayTokens.filter((token) => token.state === 'correct').length;
-  const getTotalWords = () =>
-    displayTokens.filter(
-      (token) =>
-        token.word !== ' ' &&
-        (token.state === 'correct' || token.state === 'incorrect')
-    ).length;
-  const getElapsedSeconds = () =>
-    initialCountdown.minutes * 60 - (minutes * 60 + seconds);
-  const [score, setScore] = useState({});
+    (minutesLeft <= 0 && secondsLeft <= 0);
 
   useEffect(() => {
     let timeout;
     if (!gameEnd) {
       setShowScoreBoard(false);
     } else {
+      const correctWords = displayTokens.filter(
+        (token) => token.state === 'correct'
+      ).length;
+
+      const elapsedSeconds =
+        initialCountdown.seconds - (minutesLeft * 60 + secondsLeft);
+
+      const totalWords = displayTokens.filter(
+        (token) =>
+          token.word !== ' ' &&
+          (token.state === 'correct' || token.state === 'incorrect')
+      ).length;
+
       const score = calculateGameScore(
-        getTotalWords(),
-        getElapsedSeconds(),
-        getCorrectWords()
+        totalWords,
+        elapsedSeconds,
+        correctWords
       );
       setScore(score);
       if (isNaN(score.netWPM) === false) {
         addToList('WPM_SCORE', {
           label: new Date().toLocaleDateString(),
-          value: score.netWPM,
+          value: Math.floor(score.netWPM),
         });
       }
       timeout = setTimeout(() => {
@@ -100,7 +111,13 @@ function App() {
       }, 1000);
     }
     return () => clearTimeout(timeout);
-  }, [gameEnd]);
+  }, [
+    gameEnd,
+    displayTokens,
+    initialCountdown.seconds,
+    minutesLeft,
+    secondsLeft,
+  ]);
 
   useEffect(() => {
     const disableInput = !timerStarted;
@@ -108,9 +125,7 @@ function App() {
   }, [timerStarted]);
 
   useEffect(() => {
-    document
-      .querySelector('body')
-      .classList.toggle('dark-mode', darkMode);
+    document.querySelector('body').classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
   const gameInProgress = timerStarted && !inputDisabled;
@@ -194,10 +209,9 @@ function App() {
     setLoading(true);
     restoreDefaultTime();
   };
-
-  const handleSelectedTimeoutChange = (val) => {
+  const handleSelectedTimeoutChange = (seconds) => {
     setInitialCountdown({
-      minutes: val,
+      seconds,
     });
   };
 
@@ -216,31 +230,31 @@ function App() {
           />
         </Scoreboard>
       )}
-      {!showScoreBoard &&
+      {!showScoreBoard && (
         <div className='typing-container'>
-        <div className='typing-header'>
-          <SelectMenu
-            disabled={gameInProgress}
-            items={TIMEOUT_SELECTIONS}
-            onChange={handleSelectedTimeoutChange}
+          <div className='typing-header'>
+            <SelectMenu
+              disabled={gameInProgress}
+              items={TIMEOUT_SELECTIONS}
+              onChange={handleSelectedTimeoutChange}
+              currentValue={initialCountdown.seconds}
+            />
+            <Toggle checked={darkMode} onToggle={toggleDarkMode} />
+          </div>
+          <Timer minutes={minutesLeft} seconds={secondsLeft} />
+          <div className='word-display-container'>
+            {loading && <Loader />}
+            {!loading && (
+              <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
+            )}
+          </div>
+          <WordsInput
+            onTextChanged={handleTextChanged}
+            disabled={inputDisabled}
+            clearText={!loading}
           />
-          <Toggle checked={darkMode} onToggle={toggleDarkMode} />
         </div>
-        <Timer minutes={minutes} seconds={seconds} />
-        <div className='word-display-container'>
-          {loading && <Loader />}
-          {!loading && (
-            <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
-          )}
-        </div>
-        <WordsInput
-          onTextChanged={handleTextChanged}
-          disabled={inputDisabled}
-          clearText={!loading}
-        />
-      </div>
-      }
-
+      )}
     </div>
   );
 }
