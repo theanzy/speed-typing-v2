@@ -71,10 +71,8 @@ function App() {
     minutes: minutesLeft,
     seconds: secondsLeft,
   } = useCountdownTimer(initialCountdown);
-
+  const gameEnd = inputDisabled || (minutesLeft <= 0 && secondsLeft <= 0);
   useEffect(() => {
-    let timeout;
-    const gameEnd = inputDisabled || (minutesLeft <= 0 && secondsLeft <= 0);
     if (gameEnd === false) {
       return;
     }
@@ -92,6 +90,8 @@ function App() {
     ).length;
 
     const score = calculateGameScore(totalWords, elapsedSeconds, correctWords);
+
+    let timeout;
     if (isNaN(score.netWPM) === false) {
       setScore(score);
       addToList('WPM_SCORE', {
@@ -103,7 +103,7 @@ function App() {
       }, 1000);
     }
     return () => clearTimeout(timeout);
-  }, [inputDisabled, minutesLeft, secondsLeft]);
+  }, [gameEnd]);
 
   useEffect(() => {
     const disableInput = !timerStarted;
