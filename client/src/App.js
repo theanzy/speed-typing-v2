@@ -111,13 +111,7 @@ function App() {
       }, 1000);
     }
     return () => clearTimeout(timeout);
-  }, [
-    gameEnd,
-    displayTokens,
-    initialCountdown.seconds,
-    minutesLeft,
-    secondsLeft,
-  ]);
+  }, [gameEnd]);
 
   useEffect(() => {
     const disableInput = !timerStarted;
