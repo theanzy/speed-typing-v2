@@ -60,7 +60,7 @@ function App() {
 
   const [displayTokens, setDisplayTokens] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [inputDisabled, setInputDisabled] = useState(false);
+  const [inputDisabled, setInputDisabled] = useState(true);
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [showScoreBoard, setShowScoreBoard] = useState(false);
   const {
@@ -71,44 +71,39 @@ function App() {
     minutes: minutesLeft,
     seconds: secondsLeft,
   } = useCountdownTimer(initialCountdown);
-  const gameEnd = inputDisabled || (minutesLeft <= 0 && secondsLeft <= 0);
 
   useEffect(() => {
     let timeout;
-    if (!gameEnd) {
-      setShowScoreBoard(false);
-    } else {
-      const correctWords = displayTokens.filter(
-        (token) => token.state === 'correct'
-      ).length;
+    const gameEnd = inputDisabled || (minutesLeft <= 0 && secondsLeft <= 0);
+    if (gameEnd === false) {
+      return;
+    }
+    const correctWords = displayTokens.filter(
+      (token) => token.state === 'correct'
+    ).length;
 
-      const elapsedSeconds =
-        initialCountdown.seconds - (minutesLeft * 60 + secondsLeft);
+    const elapsedSeconds =
+      initialCountdown.seconds - (minutesLeft * 60 + secondsLeft);
 
-      const totalWords = displayTokens.filter(
-        (token) =>
-          token.word !== ' ' &&
-          (token.state === 'correct' || token.state === 'incorrect')
-      ).length;
+    const totalWords = displayTokens.filter(
+      (token) =>
+        token.word !== ' ' &&
+        (token.state === 'correct' || token.state === 'incorrect')
+    ).length;
 
-      const score = calculateGameScore(
-        totalWords,
-        elapsedSeconds,
-        correctWords
-      );
+    const score = calculateGameScore(totalWords, elapsedSeconds, correctWords);
+    if (isNaN(score.netWPM) === false) {
       setScore(score);
-      if (isNaN(score.netWPM) === false) {
-        addToList('WPM_SCORE', {
-          label: new Date().toLocaleDateString(),
-          value: Math.floor(score.netWPM),
-        });
-      }
+      addToList('WPM_SCORE', {
+        label: new Date().toLocaleDateString(),
+        value: Math.floor(score.netWPM),
+      });
       timeout = setTimeout(() => {
         setShowScoreBoard(true);
       }, 1000);
     }
     return () => clearTimeout(timeout);
-  }, [gameEnd]);
+  }, [inputDisabled, minutesLeft, secondsLeft]);
 
   useEffect(() => {
     const disableInput = !timerStarted;
@@ -195,8 +190,9 @@ function App() {
   }
 
   const handleRestartGame = () => {
-    setLoading(true);
+    setShowScoreBoard(false);
     restoreDefaultTime();
+    setLoading(true);
   };
   const handleSelectedTimeoutChange = (seconds) => {
     setInitialCountdown({
