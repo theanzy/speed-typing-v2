@@ -6,6 +6,7 @@
 
 :root {
   --font-color: #222;
+  --loader-color: #9d9d9d;
   --bg-main-color: #ffffff;
   --primary-color: hsl(220, 100%, 45%);
   --hover-primary-color: hsl(220, 100%, 25%);
@@ -14,6 +15,7 @@
 .dark-mode {
   --bg-main-color: #303030;
   --font-color: #fff;
+  --loader-color: #eaeaea;
   --primary-color: hsl(201, 100%, 60%);
   --hover-primary-color: hsl(201, 100%, 45%);
 }

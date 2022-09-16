@@ -61,7 +61,6 @@ function App() {
   const [displayTokens, setDisplayTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [inputDisabled, setInputDisabled] = useState(false);
-  const isNewGame = !inputDisabled;
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [showScoreBoard, setShowScoreBoard] = useState(false);
   const {
@@ -72,9 +71,7 @@ function App() {
     minutes: minutesLeft,
     seconds: secondsLeft,
   } = useCountdownTimer(initialCountdown);
-  const gameEnd =
-    (!loading && !timerStarted && inputDisabled) ||
-    (minutesLeft <= 0 && secondsLeft <= 0);
+  const gameEnd = inputDisabled || (minutesLeft <= 0 && secondsLeft <= 0);
 
   useEffect(() => {
     let timeout;
@@ -122,23 +119,21 @@ function App() {
     document.querySelector('body').classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
-  const gameInProgress = timerStarted && !inputDisabled;
-
   useEffect(() => {
     let source = axios.CancelToken.source();
     let unmounted = false;
-
     const fetchRandomQuotes = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(RANDOM_QUOTE_API_URL, {
           params: { page: randomBetween(1, 94) },
           cancelToken: source.token,
         });
-        const results = res.data.results.slice(1, 6);
+        const results = res.data.results;
         const quotes = results.map((quote) => quote.content).join(' ');
         if (!unmounted) {
           const tokens = getDisplayTokens(quotes);
-          tokens[0].state = 'current';
+          // tokens[0].state = 'current';
           setLoading(false);
           setDisplayTokens(tokens);
           setInputDisabled(false);
@@ -229,7 +224,7 @@ function App() {
         <div className='typing-container'>
           <div className='typing-header'>
             <SelectMenu
-              disabled={gameInProgress}
+              disabled={timerStarted}
               items={TIMEOUT_SELECTIONS}
               onChange={handleSelectedTimeoutChange}
               currentValue={initialCountdown.seconds}
@@ -240,14 +235,10 @@ function App() {
           <div className='word-display-container'>
             {loading && <Loader />}
             {!loading && (
-              <WordsDisplay refresh={isNewGame} tokens={displayTokens} />
+              <WordsDisplay refresh={!inputDisabled} tokens={displayTokens} />
             )}
           </div>
-          <WordsInput
-            onTextChanged={handleTextChanged}
-            disabled={inputDisabled}
-            clearText={!loading}
-          />
+          <WordsInput onTextChanged={handleTextChanged} clearText={!loading} />
         </div>
       )}
     </div>
