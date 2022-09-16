@@ -124,7 +124,6 @@ function App() {
     let unmounted = false;
     const fetchRandomQuotes = async () => {
       try {
-        setLoading(true);
         const res = await axios.get(RANDOM_QUOTE_API_URL, {
           params: { page: randomBetween(1, 94) },
           cancelToken: source.token,
@@ -133,7 +132,7 @@ function App() {
         const quotes = results.map((quote) => quote.content).join(' ');
         if (!unmounted) {
           const tokens = getDisplayTokens(quotes);
-          // tokens[0].state = 'current';
+          tokens[0].state = 'current';
           setLoading(false);
           setDisplayTokens(tokens);
           setInputDisabled(false);
@@ -238,7 +237,11 @@ function App() {
               <WordsDisplay refresh={!inputDisabled} tokens={displayTokens} />
             )}
           </div>
-          <WordsInput onTextChanged={handleTextChanged} clearText={!loading} />
+          <WordsInput
+            disabled={inputDisabled}
+            onTextChanged={handleTextChanged}
+            clearText={!loading}
+          />
         </div>
       )}
     </div>

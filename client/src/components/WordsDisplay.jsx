@@ -8,12 +8,15 @@ function WordsDisplay({ refresh, tokens }) {
     span.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const containerRef = useCallback((container) => {
-    if (container == null) {
-      return;
-    }
-    container.scrollTop = 0;
-  }, []);
+  const containerRef = useCallback(
+    (container) => {
+      if (container == null) {
+        return;
+      }
+      container.scrollTop = -100;
+    },
+    [refresh]
+  );
 
   return (
     <>
