@@ -30,7 +30,7 @@ function Scoreboard({
           Restart
         </button>
       </div>
-      <div className='score-board-child'>{children}</div>
+      <div className='score-board-child'>{show && children}</div>
     </div>
   );
 }

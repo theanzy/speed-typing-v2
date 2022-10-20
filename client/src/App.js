@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Timer from './components/Timer';
 import WordsDisplay from './components/WordsDisplay';
 import WordsInput from './components/WordsInput';
@@ -62,6 +62,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [inputDisabled, setInputDisabled] = useState(true);
   const { darkMode, toggleDarkMode } = useDarkMode();
+  const [gameEnd, setGameEnd] = useState(false);
   const [showScoreBoard, setShowScoreBoard] = useState(false);
   const {
     timerStarted,
@@ -71,9 +72,12 @@ function App() {
     minutes: minutesLeft,
     seconds: secondsLeft,
   } = useCountdownTimer(initialCountdown);
-  const gameEnd = inputDisabled || (minutesLeft < 0 && secondsLeft < 0);
-  console.log({ gameEnd });
   useEffect(() => {
+    setGameEnd(inputDisabled || (minutesLeft < 0 && secondsLeft < 0));
+  }, [inputDisabled, minutesLeft, secondsLeft]);
+
+  useEffect(() => {
+    console.log('calculate score', gameEnd);
     if (gameEnd === false) {
       return;
     }
@@ -99,6 +103,9 @@ function App() {
         label: new Date().toLocaleDateString(),
         value: Math.floor(score.netWPM),
       });
+      console.log(score);
+      console.log(score);
+
       setShowScoreBoard(true);
     }
     return () => clearTimeout(timeout);
@@ -213,7 +220,7 @@ function App() {
           data={getValues(getList('WPM_SCORE'), 'value')}
         />
       </Scoreboard>
-      {!showScoreBoard && (
+      {!gameEnd && (
         <div className='typing-container'>
           <div className='typing-header'>
             <SelectMenu
