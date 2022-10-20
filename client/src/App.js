@@ -71,7 +71,8 @@ function App() {
     minutes: minutesLeft,
     seconds: secondsLeft,
   } = useCountdownTimer(initialCountdown);
-  const gameEnd = inputDisabled || (minutesLeft <= 0 && secondsLeft <= 0);
+  const gameEnd = inputDisabled || (minutesLeft < 0 && secondsLeft < 0);
+  console.log({ gameEnd });
   useEffect(() => {
     if (gameEnd === false) {
       return;
@@ -98,9 +99,7 @@ function App() {
         label: new Date().toLocaleDateString(),
         value: Math.floor(score.netWPM),
       });
-      timeout = setTimeout(() => {
-        setShowScoreBoard(true);
-      }, 1000);
+      setShowScoreBoard(true);
     }
     return () => clearTimeout(timeout);
   }, [gameEnd]);
@@ -202,19 +201,18 @@ function App() {
 
   return (
     <div className={`container`}>
-      {showScoreBoard && (
-        <Scoreboard
-          onRestartGame={handleRestartGame}
-          grossWPM={score.grossWPM}
-          accuracy={score.accuracy}
-          netWPM={score.netWPM}
-        >
-          <BarChart
-            labels={getValues(getList('WPM_SCORE'), 'label')}
-            data={getValues(getList('WPM_SCORE'), 'value')}
-          />
-        </Scoreboard>
-      )}
+      <Scoreboard
+        show={showScoreBoard}
+        onRestartGame={handleRestartGame}
+        grossWPM={score.grossWPM}
+        accuracy={score.accuracy}
+        netWPM={score.netWPM}
+      >
+        <BarChart
+          labels={getValues(getList('WPM_SCORE'), 'label')}
+          data={getValues(getList('WPM_SCORE'), 'value')}
+        />
+      </Scoreboard>
       {!showScoreBoard && (
         <div className='typing-container'>
           <div className='typing-header'>
@@ -224,13 +222,22 @@ function App() {
               onChange={handleSelectedTimeoutChange}
               currentValue={initialCountdown.seconds}
             />
-            <Toggle checked={darkMode} onToggle={toggleDarkMode} />
+            <Toggle
+              checked={darkMode}
+              onToggle={toggleDarkMode}
+            />
           </div>
-          <Timer minutes={minutesLeft} seconds={secondsLeft} />
+          <Timer
+            minutes={minutesLeft}
+            seconds={secondsLeft}
+          />
           <div className='word-display-container'>
             {loading && <Loader />}
             {!loading && (
-              <WordsDisplay refresh={!inputDisabled} tokens={displayTokens} />
+              <WordsDisplay
+                refresh={!inputDisabled}
+                tokens={displayTokens}
+              />
             )}
           </div>
           <WordsInput
